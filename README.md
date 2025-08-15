@@ -93,5 +93,3 @@ Example fragment:
 - The code is intentionally small and easy to modify. Suggested next improvements: per-host CLI overrides, unit tests for merge behavior, and configurable list-merge semantics.
 
 ---
-
-If you want, I can also add a short LICENSE file and a `requirements.txt` listing `ansible-runner` and `PyYAML`. Tell me which and I will add them.
