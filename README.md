@@ -53,6 +53,11 @@ The script writes a timestamped log file inside the `source_dir` and also create
 - `--username NAME`, `--private-key PATH`, `--password PWD`, `--working-dir PATH`, `--port N`: global overrides that act as highest precedence.
 - `--show-sources`: print merged provenance (`run_artifact.json`) to stdout and exit.
 
+`--private-key` resolution notes:
+- If the value is an absolute path it is used as-is.
+- If the value is relative, by default it is resolved against the current working directory where you run the Python process (cwd).
+- To force resolution relative to the play `source_dir` instead, prefix the value with `source:` (for example `--private-key source:ssh/openssh_nopassword`).
+
 Notes on `--hosts`:
 - Accepts IPv4, IPv6 (bare or in brackets). To specify a port for IPv6 use the bracket form: `[2001:db8::1]:2222`.
 
@@ -79,6 +84,10 @@ Example fragment:
 ## Troubleshooting
 - If the tool warns that a private key is outside the `source_dir`, ensure the file is mounted into your container/environment at that absolute path.
 - If a private key path does not exist the run will fail with an ERROR in the log. Use relative paths (they are resolved against `source_dir`) or absolute paths that exist inside your runtime.
+ - If a private key path does not exist the run will fail with an ERROR in the log. By default:
+   - JSON/YAML relative private keys are resolved against the `source_dir`.
+   - The `--private-key` flag resolves relative paths against your current working directory unless you prefix with `source:`.
+   Use absolute paths or the `source:` prefix when running inside containers to ensure the key path matches the runtime mount.
 
 ## Contributing
 - The code is intentionally small and easy to modify. Suggested next improvements: per-host CLI overrides, unit tests for merge behavior, and configurable list-merge semantics.

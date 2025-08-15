@@ -274,7 +274,19 @@ def main():
     if args.username:
         env_config["username"] = args.username
     if args.private_key:
-        env_config["private_key"] = args.private_key
+        # Resolve flagged private key: default resolve relative to cwd; allow explicit source: prefix
+        pk_flag = args.private_key
+        if isinstance(pk_flag, str) and pk_flag.startswith("source:"):
+            # force resolution relative to source_dir
+            pk_val = pk_flag.split(':', 1)[1]
+            resolved_pk = resolve_private_key(pk_val, base_dir)
+        else:
+            # resolve relative to current working directory (cwd), unless absolute
+            if os.path.isabs(pk_flag):
+                resolved_pk = pk_flag
+            else:
+                resolved_pk = os.path.join(os.getcwd(), pk_flag)
+        env_config["private_key"] = resolved_pk
     if args.password:
         env_config["password"] = args.password
     if args.working_dir:
